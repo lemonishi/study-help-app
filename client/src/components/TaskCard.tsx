@@ -9,7 +9,7 @@ import {
 
 function TaskCard() {
   return (
-    <Card className="mb-auto">
+    <Card>
       <CardHeader>
         <CardTitle>Card Title</CardTitle>
         <CardDescription>Card Description</CardDescription>
