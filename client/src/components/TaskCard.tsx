@@ -6,20 +6,30 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { AspectRatio } from "./ui/aspect-ratio";
 
-function TaskCard() {
+function TaskCard(props: any) {
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
-      </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
+      <AspectRatio
+        ratio={5 / 4}
+        className="flex flex-col justify-between"
+      >
+        <div>
+          <CardHeader>
+            <CardTitle>{props.title}</CardTitle>
+            <CardDescription>Card Description</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p>{props.content}</p>
+          </CardContent>
+        </div>
+        <div className="flex">
+          <CardFooter>
+            <p>Tags</p>
+          </CardFooter>
+        </div>
+      </AspectRatio>
     </Card>
   );
 }
