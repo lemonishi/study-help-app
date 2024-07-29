@@ -2,9 +2,13 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
+const secret = process.env.SECRET;
 
-const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
+const createAccessToken = (_id) => {
+  return jwt.sign({ _id }, secret, { expiresIn: "1h" });
+};
+const createRefreshToken = (_id) => {
+  return jwt.sign({ _id }, secret, { expiresIn: "1d" });
 };
 
 const loginUser = async (req, res, next) => {
@@ -24,8 +28,16 @@ const loginUser = async (req, res, next) => {
       throw Error("Incorrect password");
     }
 
-    const token = createToken(user._id);
+    const accessToken = createAccessToken(user._id);
+    const refreshToken = createRefreshToken(user._id);
+
     res
+      .cookie("jwt", refreshToken, {
+        httpOnly: true,
+        // secure: true,
+        sameSite: "strict",
+      })
+      .header("Authorization", accessToken)
       .status(200)
       .json({ message: `Welcome back, ${user.username}`, email, token });
   } catch (err) {
@@ -59,11 +71,44 @@ const registerUser = async (req, res, next) => {
     const hash = await bcrypt.hash(password, salt);
     const user = await User.create({ username, email, password: hash });
 
-    const token = createToken(user._id);
-    res.status(200).json({ email, token });
+    const accessToken = createAccessToken(user._id);
+    const refreshToken = createRefreshToken(user._id);
+
+    res
+      .cookie("jwt", refreshToken, {
+        httpOnly: true,
+        // secure: true,
+        sameSite: "strict",
+      })
+      .header("Authorization", accessToken)
+      .status(200)
+      .json({ email, token, message: "User registered" });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-module.exports = { loginUser, registerUser };
+const refreshAuth = (req, res, next) => {
+  const refreshToken = req.cookies["jwt"];
+  if (!refreshToken) {
+    return res
+      .status(400)
+      .json({ message: "Access denied. No refresh token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, secret);
+    const accessToken = jwt.sign({ _id: decoded.user._id }, secret, {
+      expiresIn: "1h",
+    });
+
+    res
+      .header("Authorization", accessToken)
+      .status(200)
+      .json({ user: decoded.user });
+  } catch (err) {
+    return res.status(400).json({ message: "Invalid refresh token" });
+  }
+};
+
+module.exports = { loginUser, registerUser, refreshAuth };
