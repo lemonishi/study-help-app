@@ -12,6 +12,17 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
+    postedBy: { type: mongoose.Schema.Types.ObjectId, ref: "user" },
+    tags: {
+      school: {
+        type: String,
+        required: true,
+      },
+      subject: {
+        type: String,
+        required: true,
+      },
+    },
   },
   { timestamps: true }
 );

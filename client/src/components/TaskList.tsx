@@ -15,7 +15,7 @@ function TaskList() {
       }
     };
     fetchTasks();
-  }, [tasks]);
+  }, []);
 
   return (
     <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 max-w-[40rem] mx-auto my-8 p-4">

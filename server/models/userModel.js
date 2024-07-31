@@ -16,6 +16,7 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
+  avatar: {},
 });
 
 module.exports = mongoose.model("User", userSchema);
