@@ -7,7 +7,7 @@ const authenticate = (req, res, next) => {
 
   if (!accessToken && !refreshToken) {
     return res
-      .status(400)
+      .status(401)
       .json({ message: "Access denied. No token provided" });
   }
 
@@ -17,7 +17,7 @@ const authenticate = (req, res, next) => {
     next();
   } catch (err) {
     if (!refreshToken) {
-      return res.status(400).json({ message: "No refresh token provided" });
+      return res.status(401).json({ message: "No refresh token provided" });
     }
 
     try {
@@ -32,7 +32,7 @@ const authenticate = (req, res, next) => {
         .status(200)
         .json({ message: "Access token updated" });
     } catch (err) {
-      return res.status(400).json({ message: "Invalid token" });
+      return res.status(401).json({ message: "Invalid token" });
     }
   }
 };

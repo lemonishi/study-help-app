@@ -2,11 +2,12 @@ import { configureStore } from "@reduxjs/toolkit";
 import taskReducer from "../actions/taskSlice";
 import authReducer from "../actions/authSlice";
 import { apiSlice } from "../actions/apiSlice";
+import authSlice from "../actions/authSlice";
 
 export const store = configureStore({
   reducer: {
     task: taskReducer,
-    auth: authReducer,
+    auth: authSlice,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

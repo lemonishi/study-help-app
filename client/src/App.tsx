@@ -3,10 +3,7 @@ import { ThemeProvider } from "./components/theme/theme-provider";
 
 function App() {
   return (
-    <ThemeProvider
-      defaultTheme="dark"
-      storageKey="vite-ui-theme"
-    >
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <IndexLayout />
     </ThemeProvider>
   );

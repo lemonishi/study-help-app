@@ -41,7 +41,7 @@ const loginUser = async (req, res, next) => {
       .status(200)
       .json({ message: `Welcome back, ${user.username}`, email, accessToken });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(401).json({ error: err.message });
   }
 };
 
@@ -84,7 +84,7 @@ const registerUser = async (req, res, next) => {
       .status(200)
       .json({ email, accessToken, message: "User registered" });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(401).json({ error: err.message });
   }
 };
 
@@ -92,7 +92,7 @@ const refreshAuth = (req, res, next) => {
   const refreshToken = req.cookies["jwt"];
   if (!refreshToken) {
     return res
-      .status(400)
+      .status(401)
       .json({ message: "Access denied. No refresh token provided" });
   }
 
@@ -107,7 +107,7 @@ const refreshAuth = (req, res, next) => {
       .status(200)
       .json({ user: decoded.user });
   } catch (err) {
-    return res.status(400).json({ message: "Invalid refresh token" });
+    return res.status(401).json({ message: "Invalid refresh token" });
   }
 };
 
