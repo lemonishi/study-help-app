@@ -39,7 +39,12 @@ const loginUser = async (req, res, next) => {
       })
       .header("Authorization", accessToken)
       .status(200)
-      .json({ message: `Welcome back, ${user.username}`, email, accessToken });
+      .json({
+        message: `Welcome back, ${user.username}`,
+        username: user.username,
+        email,
+        accessToken,
+      });
   } catch (err) {
     res.status(401).json({ error: err.message });
   }
@@ -82,7 +87,7 @@ const registerUser = async (req, res, next) => {
       })
       .header("Authorization", accessToken)
       .status(200)
-      .json({ email, accessToken, message: "User registered" });
+      .json({ username, email, accessToken, message: "User registered" });
   } catch (err) {
     res.status(401).json({ error: err.message });
   }

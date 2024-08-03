@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT;
 const uri = process.env.MONGODB_URI;
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use("/api/task", taskRoutes);
 app.use("/api/user", userRoutes);
