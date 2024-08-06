@@ -13,14 +13,13 @@ function Navbar() {
   return (
     <header className="flex items-center max-w-[64rem] m-auto p-3 border-b border-border">
       <div className="flex justify-start items-center gap-2 w-[45%]">
-        <nav>Nav Items</nav>
-        {isAuthenticated && <TaskDialog />}
+        <ModeToggle />
       </div>
       <div className="flex justify-center w-[10%] m-auto ">Logo</div>
       <div className="flex justify-end gap-2 w-[45%]">
-        <ModeToggle />
         {!isAuthenticated && <LoginDialog />}
         {!isAuthenticated && <RegisterDialog />}
+        {isAuthenticated && <TaskDialog />}
         {isAuthenticated && <ProfileAvatar />}
       </div>
     </header>

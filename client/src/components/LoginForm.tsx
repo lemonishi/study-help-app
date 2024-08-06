@@ -46,6 +46,7 @@ export function LoginForm() {
       );
       if (response.status === 401) {
       }
+      console.log(response);
 
       const json = await response.json();
       if (response.ok) {

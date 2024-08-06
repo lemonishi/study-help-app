@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
 
 const authenticate = (req, res, next) => {
-  const accessToken = req.headers["authorization"];
-  const refreshToken = req.cookies["jwt"];
+  const accessToken = req.headers.authorization;
+  const refreshToken = req.cookies.jwt;
 
   if (!accessToken && !refreshToken) {
     return res
@@ -23,7 +23,7 @@ const authenticate = (req, res, next) => {
     try {
       const decoded = jwt.verify(refreshToken, secret);
       const accessToken = jwt.sign({ _id: decoded.user._id }, secret, {
-        expiresIn: "1h",
+        expiresIn: "2m",
       });
 
       res
@@ -32,7 +32,9 @@ const authenticate = (req, res, next) => {
         .status(200)
         .json({ message: "Access token updated" });
     } catch (err) {
-      return res.status(401).json({ message: "Invalid token" });
+      return res
+        .status(401)
+        .json({ message: "Invalid token", accessToken, refreshToken });
     }
   }
 };

@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const secret = process.env.SECRET;
 
 const createAccessToken = (_id) => {
-  return jwt.sign({ _id }, secret, { expiresIn: "1h" });
+  return jwt.sign({ _id }, secret, { expiresIn: "2m" });
 };
 const createRefreshToken = (_id) => {
   return jwt.sign({ _id }, secret, { expiresIn: "1d" });
@@ -41,8 +41,7 @@ const loginUser = async (req, res, next) => {
       .status(200)
       .json({
         message: `Welcome back, ${user.username}`,
-        username: user.username,
-        email,
+        user: { username: user.username, email },
         accessToken,
       });
   } catch (err) {
@@ -87,32 +86,39 @@ const registerUser = async (req, res, next) => {
       })
       .header("Authorization", accessToken)
       .status(200)
-      .json({ username, email, accessToken, message: "User registered" });
+      .json({
+        user: { username, email },
+        email,
+        accessToken,
+        message: "User registered",
+      });
   } catch (err) {
     res.status(401).json({ error: err.message });
   }
 };
 
-const refreshAuth = (req, res, next) => {
-  const refreshToken = req.cookies["jwt"];
+const refreshAuth = async (req, res, next) => {
+  const refreshToken = req.cookies.jwt;
   if (!refreshToken) {
-    return res
-      .status(401)
-      .json({ message: "Access denied. No refresh token provided" });
+    return res.status(401).json({
+      message: "Access denied. No refresh token provided",
+    });
   }
 
   try {
     const decoded = jwt.verify(refreshToken, secret);
-    const accessToken = jwt.sign({ _id: decoded.user._id }, secret, {
-      expiresIn: "1h",
+    const user = await User.findOne({ _id: decoded._id });
+    const accessToken = jwt.sign({ _id: decoded._id }, secret, {
+      expiresIn: "2m",
     });
 
     res
       .header("Authorization", accessToken)
       .status(200)
-      .json({ user: decoded.user });
+      .json({ user, accessToken });
   } catch (err) {
-    return res.status(401).json({ message: "Invalid refresh token" });
+    console.log(err.message);
+    return res.status(401).json({ message: err.message });
   }
 };
 

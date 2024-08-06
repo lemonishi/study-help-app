@@ -6,6 +6,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import RegisterForm from "./RegisterForm";
 
@@ -13,16 +14,24 @@ function RegisterDialog() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Register</Button>
+        <Button
+          variant="outline"
+          size="sm"
+        >
+          <small>Register</small>
+        </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-[300px] sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Create your account</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
+            Fill up the fields below. Click submit when you are done
           </DialogDescription>
         </DialogHeader>
         <RegisterForm />
+        <DialogFooter>
+          <small>Already have an account? Log in here.</small>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

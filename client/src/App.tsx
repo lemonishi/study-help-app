@@ -1,18 +1,26 @@
 import IndexLayout from "@/routes/Index";
 import { ThemeProvider } from "./components/theme/theme-provider";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setCredentials } from "./actions/authSlice";
 
 function App() {
-  const isAuthenticated = useSelector(
-    (state: any) => state.auth.isAuthenticated
-  );
+  const dispatch = useDispatch();
+  const authCheck = async () => {
+    const response = await fetch("http://localhost:3000/api/user/refresh", {
+      method: "POST",
+      credentials: "include",
+    });
+
+    if (response.ok) {
+      const json = await response.json();
+      dispatch(setCredentials(json));
+    }
+  };
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      console.log("User not authenticated");
-    }
-  }, [isAuthenticated]);
+    authCheck();
+  }, []);
 
   return (
     <ThemeProvider
